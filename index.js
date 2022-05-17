@@ -46,6 +46,11 @@ class View {
       this.clearAutoCompleteList.bind(this)
     );
 
+    this.searchInput.addEventListener(
+      'focus',
+      this.renderAutoComplete.bind(this)
+    );
+
     this.searchAutocompleteList.addEventListener(
       'click',
       this.searchCurrentClick.bind(this)
@@ -55,6 +60,16 @@ class View {
       'click',
       this.removeRepoItem.bind(this)
     );
+
+    document.body.addEventListener('click', ({target}) => {
+      if (
+        target.classList.contains('search__autocomplete-item') ||
+        target.classList.contains('search__input')
+      ) {
+        return
+      }
+      this.searchAutocompleteList.innerHTML = '';
+    })
   }
 
   createElement(tagName, className) {
@@ -74,11 +89,11 @@ class View {
     }
   }
 
-  renderAutoComplete(allSearchResults) {
-    const { items: repositories = [] } = allSearchResults;
+  clearCurrentQuery() {
+    this.currentQuery = [];
+  }
 
-    this.currentQuery = repositories;
-
+  renderAutoComplete() {
     this.searchAutocompleteList.innerHTML = '';
 
     this.currentQuery.forEach((item) => {
@@ -129,6 +144,7 @@ class View {
     this.addedRepoList.append(repoItem);
     this.clearSearchInput();
     this.clearAutoCompleteList();
+    this.clearCurrentQuery();
   }
 
   removeRepoItem({ target }) {
@@ -177,8 +193,11 @@ class Search {
 
       const res = await this.getRepos(inputValue);
       const data = await res.json();
+      const repositories = data.items;
 
-      this.view.renderAutoComplete(data);
+      this.view.currentQuery = repositories;
+
+      this.view.renderAutoComplete(repositories);
     }
   }
 }
