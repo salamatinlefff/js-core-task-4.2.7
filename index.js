@@ -77,7 +77,7 @@ class View {
   renderAutoComplete(allSearchResults) {
     const { items: repositories = [] } = allSearchResults;
 
-    this.currentQuery = repositories.slice(0, this.resultsPerAutocomplete);
+    this.currentQuery = repositories;
 
     this.searchAutocompleteList.innerHTML = '';
 
@@ -153,7 +153,8 @@ class Search {
   getRepos(query) {
     const BASE = 'https://api.github.com/search';
     const encodeQuery = encodeURIComponent(query);
-    const url = `${BASE}/repositories?q=${encodeQuery}`;
+    const perPage = this.view.resultsPerAutocomplete;
+    const url = `${BASE}/repositories?q=${encodeQuery}&per_page=${perPage}`;
 
     return fetch(url);
   }
