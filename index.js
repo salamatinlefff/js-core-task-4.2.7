@@ -13,7 +13,7 @@ class View {
 
     this.searchInput = this.createElement('input', 'search__input');
     this.searchInput.type = 'text';
-    this.searchInput.placeholder = 'Введите запрос..';
+    this.searchInput.placeholder = 'enter your request..';
     this.searchForm.append(this.searchInput);
 
     this.searchAutocompleteList = this.createElement(
