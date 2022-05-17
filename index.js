@@ -7,7 +7,7 @@ class View {
     this.app = document.querySelector('.app');
 
     this.title = this.createElement('h1', 'visually-hidden');
-    this.title.textContent = 'Поиск репозиториев';
+    this.title.textContent = 'Search repositories on github';
 
     this.searchForm = this.createElement('form', 'search__form');
 
