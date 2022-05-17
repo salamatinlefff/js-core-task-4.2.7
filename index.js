@@ -36,40 +36,6 @@ class View {
     this.appAddedRepo.append(this.addedRepoList);
 
     this.app.append(this.title, this.appSearch, this.appAddedRepo);
-
-    this.searchForm.addEventListener('submit', (event) =>
-      event.preventDefault()
-    );
-
-    this.searchInput.addEventListener(
-      'input',
-      this.clearAutoCompleteList.bind(this)
-    );
-
-    this.searchInput.addEventListener(
-      'focus',
-      this.renderAutoComplete.bind(this)
-    );
-
-    this.searchAutocompleteList.addEventListener(
-      'click',
-      this.searchCurrentClick.bind(this)
-    );
-
-    this.addedRepoList.addEventListener(
-      'click',
-      this.removeRepoItem.bind(this)
-    );
-
-    document.body.addEventListener('click', ({target}) => {
-      if (
-        target.classList.contains('search__autocomplete-item') ||
-        target.classList.contains('search__input')
-      ) {
-        return
-      }
-      this.searchAutocompleteList.innerHTML = '';
-    })
   }
 
   createElement(tagName, className) {
@@ -159,11 +125,6 @@ class View {
 class Search {
   constructor(view) {
     this.view = view;
-
-    this.view.searchInput.addEventListener(
-      'keyup',
-      this.debounce(this.searchRepo.bind(this), 300)
-    );
   }
 
   getRepos(query) {
@@ -206,6 +167,48 @@ class App {
   constructor(view, search) {
     this.view = view;
     this.search = search;
+    this.listeners();
+  }
+
+  listeners() {
+    this.view.searchForm.addEventListener('submit', (event) =>
+      event.preventDefault()
+    );
+
+    this.view.searchInput.addEventListener(
+      'input',
+      this.view.clearAutoCompleteList.bind(this.view)
+    );
+
+    this.view.searchInput.addEventListener(
+      'focus',
+      this.view.renderAutoComplete.bind(this.view)
+    );
+
+    this.view.searchInput.addEventListener(
+      'keyup',
+      this.search.debounce(this.search.searchRepo.bind(this.search), 300)
+    );
+
+    this.view.searchAutocompleteList.addEventListener(
+      'click',
+      this.view.searchCurrentClick.bind(this.view)
+    );
+
+    this.view.addedRepoList.addEventListener(
+      'click',
+      this.view.removeRepoItem.bind(this.view)
+    );
+
+    document.body.addEventListener('click', ({ target }) => {
+      if (
+        target.classList.contains('search__autocomplete-item') ||
+        target.classList.contains('search__input')
+      ) {
+        return;
+      }
+      this.view.searchAutocompleteList.innerHTML = '';
+    });
   }
 
   get changeResultPerAutocomplete() {
