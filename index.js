@@ -129,7 +129,8 @@ class Search {
 
   getRepos(query) {
     const BASE = 'https://api.github.com/search';
-    const encodeQuery = encodeURIComponent(query);
+    const trimQuery = query.trim();
+    const encodeQuery = encodeURIComponent(trimQuery);
     const perPage = this.view.resultsPerAutocomplete;
     const url = `${BASE}/repositories?q=${encodeQuery}&per_page=${perPage}`;
 
