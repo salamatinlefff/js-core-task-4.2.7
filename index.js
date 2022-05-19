@@ -6,12 +6,13 @@ class View {
     // create layout
 
     this.app = document.querySelector('.app');
-    this.alertMessage = document.querySelector('.alert__message');
-    this.alertMessage.style.backgroundColor = '#cd0000';
-    this.alertMessage.style.color = '#ffffff';
-    this.alertMessage.style.fontSize = '20px';
-    this.alertMessage.style.lineHeight = '30px';
 
+    this.alertMessage = this.createElement('p', 'alert__message');
+
+    this.alertContainer = this.createElement('div', 'alert');
+    this.alertContainer.append(this.alertMessage);
+    document.body.prepend(this.alertContainer);
+    
     this.title = this.createElement('h1', 'visually-hidden');
     this.title.textContent = 'Search repositories on github';
 
