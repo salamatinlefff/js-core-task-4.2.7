@@ -153,7 +153,7 @@ class Search {
     const perPage = this.view.resultsPerAutocomplete;
     const url = `${BASE}/repositories?q=${encodeQuery}&per_page=${perPage}`;
 
-    return fetch(url).catch(this.view.handleErrorMessage);
+    return fetch(url).catch(this.view.handleErrorMessage.bind(this.view));
   }
 
   debounce(fn, delay) {
