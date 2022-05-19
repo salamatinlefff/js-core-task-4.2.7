@@ -2,9 +2,15 @@ class View {
   constructor() {
     this.currentQuery = [];
     this.resultsPerAutocomplete = 5;
-
+    
     // create layout
+
     this.app = document.querySelector('.app');
+    this.alertMessage = document.querySelector('.alert__message');
+    this.alertMessage.style.backgroundColor = '#cd0000';
+    this.alertMessage.style.color = '#ffffff';
+    this.alertMessage.style.fontSize = '20px';
+    this.alertMessage.style.lineHeight = '30px';
 
     this.title = this.createElement('h1', 'visually-hidden');
     this.title.textContent = 'Search repositories on github';
@@ -120,6 +126,18 @@ class View {
       currentItem.remove();
     }
   }
+
+  handleErrorMessage(err) {
+    console.warn(err);
+    
+    this.alertMessage.textContent = 'Something wrong. Please try later';
+
+    const timer = setTimeout(() => {
+      clearTimeout(timer);
+
+      this.alertMessage.textContent = '';
+    }, 3000);
+  }
 }
 
 class Search {
@@ -134,7 +152,7 @@ class Search {
     const perPage = this.view.resultsPerAutocomplete;
     const url = `${BASE}/repositories?q=${encodeQuery}&per_page=${perPage}`;
 
-    return fetch(url);
+    return fetch(url).catch(this.view.handleErrorMessage);
   }
 
   debounce(fn, delay) {
@@ -153,13 +171,16 @@ class Search {
     if (this.view.searchInput.value.trim()) {
       const inputValue = this.view.searchInput.value;
 
-      const res = await this.getRepos(inputValue);
-      const data = await res.json();
-      const repositories = data.items;
+      try {
+        const res = await this.getRepos(inputValue);
+        const data = await res.json();
+        const repositories = data.items;
+        this.view.currentQuery = repositories;
 
-      this.view.currentQuery = repositories;
-
-      this.view.renderAutoComplete(repositories);
+        this.view.renderAutoComplete(repositories);
+      } catch (err) {
+        this.view.handleErrorMessage(err);
+      }
     }
   }
 }
